@@ -24,7 +24,7 @@ const fetchUsers = () => {
     perPage: rowPerPage.value,
     currentPage: currentPage.value,
   }).then(response => {
-    users.value = response.data.users
+    users.value = response.data.users.reverse()
     totalPage.value = response.data.totalPage
     totalUsers.value = response.data.totalUsers
   }).catch(error => {
@@ -104,42 +104,6 @@ const addNewUser = userData => {
   // refetch User
   fetchUsers()
 }
-
-// 👉 List
-const userListMeta = [
-  {
-    icon: 'tabler-user',
-    color: 'primary',
-    title: 'Session',
-    stats: '21,459',
-    percentage: +29,
-    subtitle: 'Total Users',
-  },
-  {
-    icon: 'tabler-user-plus',
-    color: 'error',
-    title: 'Paid Users',
-    stats: '4,567',
-    percentage: +18,
-    subtitle: 'Last week analytics',
-  },
-  {
-    icon: 'tabler-user-check',
-    color: 'success',
-    title: 'Active Users',
-    stats: '19,860',
-    percentage: -14,
-    subtitle: 'Last week analytics',
-  },
-  {
-    icon: 'tabler-user-exclamation',
-    color: 'warning',
-    title: 'Pending Users',
-    stats: '237',
-    percentage: +42,
-    subtitle: 'Last week analytics',
-  },
-]
 </script>
 
 <template>
@@ -264,7 +228,7 @@ const userListMeta = [
             {{ user.id }}
           </RouterLink>
           </td>
-                    <!-- 👉 Client Avatar and Email -->
+                    <!-- 👉 Full Name -->
                     <td>
                       <div class="d-flex align-center">
                         <div class="d-flex flex-column">

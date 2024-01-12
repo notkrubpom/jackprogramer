@@ -24,7 +24,7 @@ const fetchUsers = () => {
     perPage: rowPerPage.value,
     currentPage: currentPage.value,
   }).then(response => {
-    users.value = response.data.users
+    users.value = response.data.users.reverse()
     totalPage.value = response.data.totalPage
     totalUsers.value = response.data.totalUsers
   }).catch(error => {
@@ -51,10 +51,6 @@ const roles = [
 
 const status = [
   {
-    title: 'Pending',
-    value: 'pending',
-  },
-  {
     title: 'Active',
     value: 'active',
   },
@@ -78,12 +74,10 @@ const resolveUserRoleVariant = role => {
 }
 
 const resolveUserStatusVariant = stat => {
-  if (stat === 'pending')
-    return 'warning'
   if (stat === 'active')
     return 'success'
   if (stat === 'inactive')
-    return 'secondary'
+    return 'error'
   
   return 'primary'
 }
@@ -233,13 +227,10 @@ const userListMeta = [
             <thead>
               <tr>
                 <th scope="col">
-                  USER
+                  NO.
                 </th>
                 <th scope="col">
-                  ROLE
-                </th>
-                <th scope="col">
-                  BILLING
+                  FULLNAME
                 </th>
                 <th scope="col">
                   STATUS
@@ -256,21 +247,10 @@ const userListMeta = [
                 :key="user.id"
                 style="height: 3.75rem;"
               >
+
                 <!-- 👉 User -->
                 <td>
                   <div class="d-flex align-center">
-                    <VAvatar
-                      variant="tonal"
-                      :color="resolveUserRoleVariant(user.role).color"
-                      class="me-3"
-                      size="38"
-                    >
-                      <VImg
-                        v-if="user.avatar"
-                        :src="user.avatar"
-                      />  
-                      <span v-else>{{ avatarText(user.fullName) }}</span>
-                    </VAvatar>
 
                     <div class="d-flex flex-column">
                       <h6 class="text-base">
@@ -278,29 +258,16 @@ const userListMeta = [
                           :to="{ name: 'apps-user-view-id', params: { id: user.id } }"
                           class="font-weight-medium user-list-name"
                         >
-                          {{ user.fullName }}
+                          {{ user.id }}
                         </RouterLink>
                       </h6>
-                      <span class="text-sm text-disabled">@{{ user.email }}</span>
                     </div>
                   </div>
                 </td>
 
                 <!-- 👉 Role -->
                 <td>
-                  <VAvatar
-                    :color="resolveUserRoleVariant(user.role).color"
-                    :icon="resolveUserRoleVariant(user.role).icon"
-                    variant="tonal"
-                    size="30"
-                    class="me-4"
-                  />
-                  <span class="text-capitalize text-base">{{ user.role }}</span>
-                </td>
-
-                <!-- 👉 Billing -->
-                <td>
-                  <span class="text-base">{{ user.billing }}</span>
+                  <span class="text-capitalize text-base">{{ user.fullName }}</span>
                 </td>
 
                 <!-- 👉 Status -->
@@ -314,6 +281,7 @@ const userListMeta = [
                     {{ user.status }}
                   </VChip>
                 </td>
+
 
                 <!-- 👉 Actions -->
                 <td

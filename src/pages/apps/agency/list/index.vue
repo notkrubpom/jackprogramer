@@ -8,7 +8,7 @@ const searchQuery = ref('')
 const selectedRole = ref()
 const selectedPlan = ref()
 const selectedStatus = ref()
-const rowPerPage = ref('')
+const rowPerPage = ref(10)
 const currentPage = ref(1)
 const totalPage = ref(1)
 const totalUsers = ref(0)
@@ -24,7 +24,7 @@ const fetchUsers = () => {
     perPage: rowPerPage.value,
     currentPage: currentPage.value,
   }).then(response => {
-    users.value = response.data.users
+    users.value = response.data.users.reverse()
     totalPage.value = response.data.totalPage
     totalUsers.value = response.data.totalUsers
   }).catch(error => {
@@ -86,10 +86,6 @@ const country = [
 
 
 const status = [
-  {
-    title: 'Pending',
-    value: 'pending',
-  },
   {
     title: 'Active',
     value: 'active',
@@ -169,54 +165,23 @@ const addNewUser = userData => {
 <template>
   <section>
     <VRow>
-      <VCol
-        v-for="meta in userListMeta"
-        :key="meta.title"
-        cols="12"
-        sm="6"
-        lg="3"
-      >
-        <VCard>
-          <VCardText class="d-flex justify-space-between">
-            <div>
-              <span>{{ meta.title }}</span>
-              <div class="d-flex align-center gap-2 my-1">
-                <h6 class="text-h6">
-                  {{ meta.stats }}
-                </h6>
-                <span :class="meta.percentage > 0 ? 'text-success' : 'text-error'">({{ meta.percentage }}%)</span>
-              </div>
-              <span>{{ meta.subtitle }}</span>
-            </div>
-
-            <VAvatar
-              rounded
-              variant="tonal"
-              :color="meta.color"
-              :icon="meta.icon"
-            />
-          </VCardText>
-        </VCard>
-      </VCol>
-
       <VCol cols="12">
         <VCard title="All Agency">
           <!-- 👉 Filters -->
           <VCardText>
-            <VRow>
-              <!-- 👉 Select Role -->
-              <VCol
-                cols="12"
-                sm="4"
-              >
-              <VSelect
-              v-model="selectedRole"
-              label="Select Program"
-              :items="roles"
-              clearable
-              clear-icon="tabler-x"
+            <!-- 👉 Rows per page -->
+            <div
+            class="d-flex align-center"
+            style="width: 135px;"
+          >
+            <span class="text-no-wrap me-3">Show:</span>
+            <VSelect
+              v-model="rowPerPage"
+              density="compact"
+              :items="[10, 20, 30, 50]"
             />
-              </VCol>
+          </div>
+            <VRow>
               <!-- 👉 Select Plan -->
               <VCol
                 cols="12"
@@ -226,7 +191,7 @@ const addNewUser = userData => {
               <!-- 👉 Select Status -->
               <VCol
                 cols="12"
-                sm="4"
+                sm="8"
               >
                 <VSelect
                   v-model="selectedStatus"
@@ -286,6 +251,9 @@ const addNewUser = userData => {
             <thead>
               <tr>
                 <th scope="col">
+                  NO.
+                </th>
+                <th scope="col">
                   AGENCY NAME
                 </th>
                 <th scope="col">
@@ -309,7 +277,7 @@ const addNewUser = userData => {
                 :key="user.id"
                 style="height: 3.75rem;"
               >
-                <!-- 👉 User -->
+                <!-- 👉 No.User -->
                 <td>
                   <div class="d-flex align-center">
 
@@ -319,23 +287,28 @@ const addNewUser = userData => {
                           :to="{ name: 'apps-user-view-id', params: { id: user.id } }"
                           class="font-weight-medium user-list-name"
                         >
-                          {{ user.agencyName }}
+                          {{ user.id }}
                         </RouterLink>
                       </h6>
                     </div>
                   </div>
                 </td>
 
-                <!-- 👉 Role -->
+                <!-- 👉 AgencyNAME -->
                 <td>
-                  <span class="text-capitalize text-base">{{ user.country }}</span>
+                  <span class="text-capitalize text-base">{{ user.agencyName }}</span>
                 </td>
 
-                <!-- 👉 Billing -->
+                <!-- 👉 Country -->
                 <td>
-                  <span class="text-base">{{ user.currency }}</span>
+                  <span class="text-base">{{ user.country }}</span>
                 </td>
 
+                <!-- 👉 Currency -->
+                <td>
+                    {{ user.currency }}
+                </td>
+                
                 <!-- 👉 Status -->
                 <td>
                   <VChip
